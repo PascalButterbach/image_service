@@ -1,0 +1,15 @@
+server:
+  port: 9002
+
+
+spring:
+  application:
+    name: IMAGE-SERVICE
+
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defeaultZone: http://localhost:8761/eureka
