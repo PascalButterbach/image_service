@@ -2,6 +2,7 @@ package de.chronies.image_service.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageController {
 
     @GetMapping({"", "/"})
-    public String getAll() {
-        return "Shouldnt be visible";
+    public String getAll(@RequestHeader("X-auth-user-id")Integer userId) {
+        return "Shouldnt be visible. Requesting UserID: " + userId;
     }
 
 }
