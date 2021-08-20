@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageController {
 
     @GetMapping({"", "/"})
-    public String getAll(@RequestHeader("X-auth-user-id")Integer userId) {
-        return "Shouldnt be visible. Requesting UserID: " + userId;
+    public String getAll(@RequestHeader("x-auth-user-id")Integer userId,
+                         @RequestHeader("x-auth-user-email") String email) {
+        return "Shouldnt be visible. Requesting UserID: " + userId + ", UserEmail: " + email;
     }
 
 }
