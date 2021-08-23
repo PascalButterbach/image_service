@@ -9,25 +9,36 @@ import org.springframework.integration.file.remote.session.CachingSessionFactory
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 
+import java.util.Properties;
+
 @Configuration
 public class FtpConfig {
 
     @Value("${ftp.host}")
-    private String sftpHost;
+    private String host;
 
     @Value("${ftp.username}")
-    private String sftpUser;
+    private String user;
 
     @Value("${ftp.password}")
-    private String sftpPasword;
+    private String password;
+
+    @Value("${ftp.port}")
+    private int port;
 
     @Bean
     public SessionFactory<ChannelSftp.LsEntry> sftpSessionFactory() {
+        Properties config = new java.util.Properties();
+        config.put("StrictHostKeyChecking", "no");
+
         DefaultSftpSessionFactory factory = new DefaultSftpSessionFactory(true);
-        factory.setHost(sftpHost);
-        factory.setPort(22);
-        factory.setUser(sftpUser);
-        factory.setPassword(sftpPasword);
+
+        factory.setSessionConfig(config);
+
+        factory.setHost(host);
+        factory.setPort(port);
+        factory.setUser(user);
+        factory.setPassword(password);
         factory.setAllowUnknownKeys(true);
         return new CachingSessionFactory<>(factory);
     }

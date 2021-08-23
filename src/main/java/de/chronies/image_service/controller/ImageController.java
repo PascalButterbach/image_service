@@ -2,6 +2,7 @@ package de.chronies.image_service.controller;
 
 import com.jcraft.jsch.ChannelSftp;
 import de.chronies.image_service.config.FtpConfig;
+import de.chronies.image_service.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,24 +20,12 @@ import java.time.LocalTime;
 @RequestMapping("/image")
 public class ImageController {
 
-    private final FtpConfig ftpConfig;
+    private final UploadService uploadService;
 
-    @Value("${ftp.baseuri}")
-    String baseUri;
 
-    @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
-
-        Session<ChannelSftp.LsEntry> session = ftpConfig.sftpSessionFactory().getSession();
-
-        String filename = RandomStringUtils.randomAlphanumeric(5) + "_" + file.getOriginalFilename();
-
-        session.write(file.getInputStream(), filename);
-
-        if(session.isOpen())
-            session.close();
-
-        return baseUri + filename;
+    @PostMapping({"", "/"})
+    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
+       return uploadService.uploadFile(file);
     }
 
     @GetMapping({"", "/"})
