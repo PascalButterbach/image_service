@@ -1,6 +1,6 @@
 package de.chronies.image_service.config;
 
-import de.chronies.image_service.model.FileType;
+import de.chronies.image_service.models.FileType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 

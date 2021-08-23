@@ -1,18 +1,12 @@
 package de.chronies.image_service.controller;
 
-import com.jcraft.jsch.ChannelSftp;
-import de.chronies.image_service.config.FtpConfig;
-import de.chronies.image_service.service.UploadService;
+import de.chronies.image_service.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.integration.file.remote.session.Session;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.time.Instant;
-import java.time.LocalTime;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -20,12 +14,12 @@ import java.time.LocalTime;
 @RequestMapping("/image")
 public class ImageController {
 
-    private final UploadService uploadService;
+    private final ImageUploadService imageUploadService;
 
 
     @PostMapping({"", "/"})
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
-       return uploadService.uploadFile(file);
+    public ResponseEntity<List<String>> upload(@RequestParam("file") MultipartFile file) throws Exception {
+       return ResponseEntity.ok(imageUploadService.initUpload(file));
     }
 
     @GetMapping({"", "/"})

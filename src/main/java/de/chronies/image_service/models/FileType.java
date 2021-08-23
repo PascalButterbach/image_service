@@ -1,4 +1,4 @@
-package de.chronies.image_service.model;
+package de.chronies.image_service.models;
 
 import lombok.Builder;
 import lombok.Getter;

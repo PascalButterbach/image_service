@@ -1,6 +1,5 @@
 package de.chronies.image_service.config;
 
-
 import com.jcraft.jsch.ChannelSftp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,31 +14,28 @@ import java.util.Properties;
 public class FtpConfig {
 
     @Value("${ftp.host}")
-    private String host;
+    private String HOST;
 
     @Value("${ftp.username}")
-    private String user;
+    private String USER;
 
     @Value("${ftp.password}")
-    private String password;
+    private String PASSWORD;
 
     @Value("${ftp.port}")
-    private int port;
+    private int PORT;
 
     @Bean
     public SessionFactory<ChannelSftp.LsEntry> sftpSessionFactory() {
         Properties config = new java.util.Properties();
-        config.put("StrictHostKeyChecking", "no");
-
         DefaultSftpSessionFactory factory = new DefaultSftpSessionFactory(true);
-
         factory.setSessionConfig(config);
-
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setUser(user);
-        factory.setPassword(password);
+        factory.setHost(HOST);
+        factory.setPort(PORT);
+        factory.setUser(USER);
+        factory.setPassword(PASSWORD);
         factory.setAllowUnknownKeys(true);
         return new CachingSessionFactory<>(factory);
     }
+
 }
