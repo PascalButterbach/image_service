@@ -31,8 +31,6 @@ Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="8.jpg"
-
-
 < C:\Users\Butti\Desktop\IMAGE-SERVICE-TEST-IMAGES\8.jpg
 --WebAppBoundary--
 
@@ -43,8 +41,6 @@ Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="2.png"
-
-
 < C:\Users\Butti\Desktop\IMAGE-SERVICE-TEST-IMAGES\2.png
 --WebAppBoundary--
 
@@ -55,12 +51,9 @@ Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="6.gif"
-
-
 < C:\Users\Butti\Desktop\IMAGE-SERVICE-TEST-IMAGES\6.gif
 --WebAppBoundary--
 
-<> 2021-08-24T122058.200.json
 
 
 
