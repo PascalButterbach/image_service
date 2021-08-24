@@ -4,8 +4,8 @@ import com.google.common.io.ByteSource;
 import com.jcraft.jsch.ChannelSftp;
 import de.chronies.image_service.config.FtpConfig;
 import de.chronies.image_service.exceptions.ApiException;
-import de.chronies.image_service.models.enums.FileSizeDir;
-import de.chronies.image_service.models.enums.MimeType;
+import de.chronies.image_service.model.enums.FileSizeDir;
+import de.chronies.image_service.model.enums.MimeType;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,16 +38,13 @@ public class ImageUploadService {
 
         MimeType matchedMime = guessContentTypeFromStream(new ByteArrayInputStream(file.getBytes()));
 
-        // resize
         Map<FileSizeDir, byte[]> finalFiles = new HashMap<>();
         finalFiles.put(FileSizeDir.ORIGINAL, file.getBytes());
-        //        -small 128px * 128px
-        //        -resized max width 1024px * ratio height
-        //        - if original bigger then resized
-        // create /thumb + /img + /orig
+
+        // resize
         finalFiles.putAll(imageResizeService.resize(file, matchedMime));
 
-        // all same filename but different folder -> SAVE
+        // upload
         List<String> urls = uploadFile(finalFiles, matchedMime);
 
         // create Object for Database & persist
@@ -114,13 +110,6 @@ public class ImageUploadService {
             }
         }
 
-       /* for (FileType fileType : fileTypeComponent.getFileTypes()) {
-            if (fileType.match(signature.toString()))
-                return Optional.of(fileType);
-        }*/
-
         throw new ApiException("bla", HttpStatus.INTERNAL_SERVER_ERROR);
-
     }
-
 }

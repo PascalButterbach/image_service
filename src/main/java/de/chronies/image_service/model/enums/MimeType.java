@@ -1,4 +1,4 @@
-package de.chronies.image_service.models.enums;
+package de.chronies.image_service.model.enums;
 
 public enum MimeType {
 
@@ -34,4 +34,4 @@ public enum MimeType {
     }
 
 
-    }
+}
