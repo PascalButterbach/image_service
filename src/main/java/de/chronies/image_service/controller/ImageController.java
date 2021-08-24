@@ -1,5 +1,6 @@
 package de.chronies.image_service.controller;
 
+import de.chronies.image_service.model.Image;
 import de.chronies.image_service.service.ImageService;
 import de.chronies.image_service.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class ImageController {
     private final ImageService imageService;
 
 
-    @PostMapping({"", "/"})
+    @PostMapping("/")
     public ResponseEntity<List<String>> upload(@RequestHeader(name = "x-auth-user-id", defaultValue = "-1") Integer userId,
                                                @RequestParam("file") MultipartFile file) throws Exception {
         return ResponseEntity.ok(imageUploadService.initUpload(userId, file));
@@ -31,11 +32,15 @@ public class ImageController {
         return ResponseEntity.ok(imageService.delete(image_id));
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<Image>> getAll(@RequestHeader(name = "x-auth-user-id", defaultValue = "-1") Integer userId,
+                                              @RequestHeader(name = "x-auth-user-email", defaultValue = "-1") String email) {
+        return ResponseEntity.ok(imageService.getAll());
+    }
 
-    @GetMapping({"", "/"})
-    public String getAll(@RequestHeader("x-auth-user-id") Integer userId,
-                         @RequestHeader("x-auth-user-email") String email) {
-        return "Shouldnt be visible. Requesting UserID: " + userId + ", UserEmail: " + email;
+    @GetMapping("/{image_id}")
+    public ResponseEntity<Image> get(@PathVariable int image_id){
+        return ResponseEntity.ok(imageService.findImageById(image_id));        
     }
 
 }

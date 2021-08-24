@@ -12,6 +12,7 @@ import org.springframework.integration.file.remote.session.Session;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,9 @@ public class ImageService {
                 .orElseThrow(() -> new ApiException("Image not found.", HttpStatus.NOT_FOUND));
     }
 
+    public List<Image> getAll(){
+        return imageRepository.getAll();
+    }
 
     public boolean delete(int image_id) throws IOException {
         Session<ChannelSftp.LsEntry> session = ftpConfig.sftpSessionFactory().getSession();

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -56,8 +57,10 @@ public class ImageRepository implements ObjectRepository<Image> {
         return Optional.ofNullable(image);
     }
 
-
-
+    public List<Image> getAll(){
+        String sql = "SELECT * FROM image_service.images";
+        return jdbcTemplate.query(sql,rowMapper);
+    }
 
 
     @Override
