@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.chronies.image_service.model.enums.FileSizeDir.THUMBNAIL;
-
 @Service
 @RequiredArgsConstructor
 public class ImageUploadService {
@@ -50,7 +48,7 @@ public class ImageUploadService {
         finalFiles.putAll(imageResizeService.resize(file, matchedMime));
 
         // upload
-        Map<String,String> urls = uploadFile(finalFiles, matchedMime);
+        Map<String, String> urls = uploadFile(finalFiles, matchedMime);
 
         // create Object for Database & persist
         Image img = Image.builder()
@@ -61,17 +59,16 @@ public class ImageUploadService {
                 .build();
 
         if (imageRepository.create(img))
-            // respond with Object / DTO / API RESPONSE
             return new ArrayList<>(urls.values());
         else
             throw new ApiException("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public Map<String,String> uploadFile(Map<FileSizeDir, byte[]> resizedFiles, MimeType matchedMime) throws Exception {
+    public Map<String, String> uploadFile(Map<FileSizeDir, byte[]> resizedFiles, MimeType matchedMime) throws Exception {
 
         Session<ChannelSftp.LsEntry> session = ftpConfig.sftpSessionFactory().getSession();
 
-        Map<String,String> urls = new HashMap<>();
+        Map<String, String> urls = new HashMap<>();
 
         String randomFileName = RandomStringUtils.randomAlphanumeric(32);
         for (Map.Entry<FileSizeDir, byte[]> entry : resizedFiles.entrySet()) {
@@ -87,20 +84,6 @@ public class ImageUploadService {
             session.close();
 
         return urls;
-    }
-
-    public boolean removeFile(String[] fileNames) throws IOException {
-        Session<ChannelSftp.LsEntry> session = ftpConfig.sftpSessionFactory().getSession();
-
-        for (String fileName : fileNames) {
-            session.remove(fileName);
-        }
-
-        if (session.isOpen())
-            session.close();
-
-
-        return true;
     }
 
 

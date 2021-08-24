@@ -13,7 +13,7 @@ import java.time.Instant;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(ApiException.class)
+    @ExceptionHandler({ApiException.class})
     public ResponseEntity<ApiResponseDto> handleException(ApiException e, HttpServletResponse response, HttpServletRequest request) {
 
         var apiException = ApiResponseDto.builder()

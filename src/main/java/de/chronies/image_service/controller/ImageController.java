@@ -1,11 +1,13 @@
 package de.chronies.image_service.controller;
 
+import de.chronies.image_service.service.ImageService;
 import de.chronies.image_service.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class ImageController {
 
     private final ImageUploadService imageUploadService;
+    private final ImageService imageService;
 
 
     @PostMapping({"", "/"})
@@ -22,6 +25,12 @@ public class ImageController {
                                                @RequestParam("file") MultipartFile file) throws Exception {
         return ResponseEntity.ok(imageUploadService.initUpload(userId, file));
     }
+
+    @DeleteMapping("/{image_id}")
+    public ResponseEntity<Boolean> removeUser(@PathVariable int image_id) throws IOException {
+        return ResponseEntity.ok(imageService.delete(image_id));
+    }
+
 
     @GetMapping({"", "/"})
     public String getAll(@RequestHeader("x-auth-user-id") Integer userId,

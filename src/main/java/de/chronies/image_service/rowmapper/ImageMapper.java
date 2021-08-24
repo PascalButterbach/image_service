@@ -1,9 +1,9 @@
 package de.chronies.image_service.rowmapper;
 
 import de.chronies.image_service.model.Image;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;

@@ -43,12 +43,26 @@ public class ImageRepository implements ObjectRepository<Image> {
     }
 
     @Override
-    public Optional<Image> get(int id) {
-        return Optional.empty();
+    public Optional<Image> get(int image_id) {
+        String sql = "SELECT * FROM image_service.images WHERE image_id = ?";
+
+        Image image = null;
+        try {
+            image = jdbcTemplate.queryForObject(sql, rowMapper, image_id);
+        } catch (Exception e) {
+            // no actions required -> return empty optional
+        }
+
+        return Optional.ofNullable(image);
     }
 
+
+
+
+
     @Override
-    public boolean delete(int id) {
-        return false;
+    public boolean delete(int image_id) {
+        String sql = "DELETE FROM image_service.images  WHERE image_id = ?";
+        return jdbcTemplate.update(sql, image_id) > 0;
     }
 }
