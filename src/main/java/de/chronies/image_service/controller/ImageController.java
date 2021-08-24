@@ -28,7 +28,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{image_id}")
-    public ResponseEntity<Boolean> removeUser(@PathVariable int image_id) throws IOException {
+    public ResponseEntity<Boolean> removeImage(@PathVariable int image_id) throws IOException {
         return ResponseEntity.ok(imageService.delete(image_id));
     }
 
@@ -40,7 +40,7 @@ public class ImageController {
 
     @GetMapping("/{image_id}")
     public ResponseEntity<Image> get(@PathVariable int image_id){
-        return ResponseEntity.ok(imageService.findImageById(image_id));        
+        return ResponseEntity.ok(imageService.findImageById(image_id));
     }
 
 }
