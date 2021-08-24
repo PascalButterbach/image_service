@@ -18,8 +18,9 @@ public class ImageController {
 
 
     @PostMapping({"", "/"})
-    public ResponseEntity<List<String>> upload(@RequestParam("file") MultipartFile file) throws Exception {
-       return ResponseEntity.ok(imageUploadService.initUpload(file));
+    public ResponseEntity<List<String>> upload(@RequestHeader(name = "x-auth-user-id", defaultValue = "-1") Integer userId,
+                                               @RequestParam("file") MultipartFile file) throws Exception {
+        return ResponseEntity.ok(imageUploadService.initUpload(userId, file));
     }
 
     @GetMapping({"", "/"})

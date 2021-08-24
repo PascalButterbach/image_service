@@ -4,8 +4,10 @@ import com.google.common.io.ByteSource;
 import com.jcraft.jsch.ChannelSftp;
 import de.chronies.image_service.config.FtpConfig;
 import de.chronies.image_service.exceptions.ApiException;
+import de.chronies.image_service.model.Image;
 import de.chronies.image_service.model.enums.FileSizeDir;
 import de.chronies.image_service.model.enums.MimeType;
+import de.chronies.image_service.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -23,18 +25,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.chronies.image_service.model.enums.FileSizeDir.THUMBNAIL;
+
 @Service
 @RequiredArgsConstructor
 public class ImageUploadService {
 
     private final FtpConfig ftpConfig;
     private final ImageResizeService imageResizeService;
+    private final ImageRepository imageRepository;
 
     @Value("${ftp.baseuri}")
     String BASE_URI;
 
 
-    public List<String> initUpload(MultipartFile file) throws Exception {
+    public List<String> initUpload(Integer userId, MultipartFile file) throws Exception {
 
         MimeType matchedMime = guessContentTypeFromStream(new ByteArrayInputStream(file.getBytes()));
 
@@ -45,26 +50,34 @@ public class ImageUploadService {
         finalFiles.putAll(imageResizeService.resize(file, matchedMime));
 
         // upload
-        List<String> urls = uploadFile(finalFiles, matchedMime);
+        Map<String,String> urls = uploadFile(finalFiles, matchedMime);
 
         // create Object for Database & persist
+        Image img = Image.builder()
+                .user_id(userId)
+                .path(urls.get("resized") == null ? urls.get("original") : urls.get("resized"))
+                .path_thumbnail(urls.get("thumbnail"))
+                .path_original(urls.get("resized") == null ? null : urls.get("original"))
+                .build();
 
-        // respond with Object / DTO / API RESPONSE
-
-        return urls;
+        if (imageRepository.create(img))
+            // respond with Object / DTO / API RESPONSE
+            return new ArrayList<>(urls.values());
+        else
+            throw new ApiException("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public List<String> uploadFile(Map<FileSizeDir, byte[]> resizedFiles, MimeType matchedMime) throws Exception {
+    public Map<String,String> uploadFile(Map<FileSizeDir, byte[]> resizedFiles, MimeType matchedMime) throws Exception {
 
         Session<ChannelSftp.LsEntry> session = ftpConfig.sftpSessionFactory().getSession();
 
-        List<String> urls = new ArrayList<>();
+        Map<String,String> urls = new HashMap<>();
 
         String randomFileName = RandomStringUtils.randomAlphanumeric(32);
         for (Map.Entry<FileSizeDir, byte[]> entry : resizedFiles.entrySet()) {
             String filename = entry.getKey().getDirectory() + randomFileName + matchedMime.getFileEnding();
 
-            urls.add(BASE_URI + filename);
+            urls.put(entry.getKey().getType(), BASE_URI + filename);
 
             InputStream inputStream = ByteSource.wrap(entry.getValue()).openStream();
             session.write(inputStream, filename);
